@@ -1,0 +1,74 @@
+<div class="container" data-aos='fade' data-aos-duration="1400" data-aos-delay="200">
+  <div id="main">
+    <h1 class='ui huge header'>Welcome, {{ User.first_name }}</h1>
+    <div class="ui card left">
+      <div class="image">
+        <img class="current" src="assets/img/zach.png">
+        <button class="ui button" id="toggle">
+            <i class="image icon"></i>
+            Gallery!
+        </button>
+      </div>
+      <div class="content">
+        <a class="header">{{ User.first_name }}</a>
+        <div class="meta">
+          <span class="date">Joined in {{ User.created }}</span>
+        </div>
+        <div class="description">
+          Name: {{ User.first_name }} {{ User.last_name }}
+          <br>
+          Email: {{ User.email }}
+        </div>
+      </div>
+      <div class="extra content">
+        <button class='ui button newpic'>Take New Picture</button>
+        <button (click)=Logout() class='ui button'><i></i>Logout</button>
+      </div>
+    </div>
+    <div class="right">
+      <h4>Face Shape: Round</h4>
+      <h4>Recommended Glasses Style: Rectangular</h4>
+      <div id="glasses">
+        <h2>Glasses for you</h2>
+        <div>
+          <div class="glass">
+              <img src="assets/img/glasses1.png">
+          </div>
+          <div class="glass">
+              <img src="assets/img/glasses2.png">
+          </div>
+          <div class="glass">
+              <img src="assets/img/glasses3.png">
+          </div>
+          <div class="glass">
+              <img src="assets/img/glasses4.png">
+          </div>
+          <div class="glass">
+              <img src="assets/img/glasses5.png">
+          </div>
+          <div class="glass">
+              <img src="assets/img/glasses6.png">
+          </div>
+          <div class="glass">
+              <img src="assets/img/glasses7.png">
+          </div>
+          <div class="glass">
+              <img src="assets/img/glasses8.png">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class='camera'>
+  <h1 class="font" style="color:white;">Smile!</h1>
+  <app-camera [inputs]="inputs"></app-camera>
+  <div class='btns'>
+    <input id="back" type="submit" value="Return to Dashboard" class="ui inverted blue medium button next1 ">
+  </div>
+</div>
+<div class="ui longer modal gallery">
+  <div class="actions">
+    <div class="ui button close">Close</div>
+  </div>
+</div>
