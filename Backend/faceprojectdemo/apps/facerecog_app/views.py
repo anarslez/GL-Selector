@@ -243,7 +243,7 @@ def preregister(request): # Checks registration info for validity and to prevent
         User.objects.create(first_name = body['first_name'], last_name = body['last_name'], email = body['email'], password = password)
         session['id'] = User.objects.get(email = body['email']).id
         context = {
-            'success': 'success'
+            'message': 'success'
         }
         return HttpResponse(json.dumps(context), content_type="application/json")
         
@@ -251,11 +251,13 @@ def login(request): # Logs the user in
     body = json.loads(request.body.decode('utf-8'))
     errors = User.objects.login_validator(body)
     if len(errors):
+        print(errors)
         return HttpResponse(json.dumps(errors), content_type="application/json")
     else:
         user = User.objects.get(email=body['email'])
+        print(user)
         context_before = {
-                'success': 'success',
+                'message': 'success',
                 'id': user.id,
             }
         return HttpResponse(json.dumps(context_before), content_type="application/json")

@@ -28,11 +28,11 @@ class UserManager(models.Manager):
     def login_validator(self, postData):
         errors = {}
         if len(User.objects.filter(email = postData['email'])) == 0:
-            errors["success"] = "Invalid Login"
+            errors["message"] = "Invalid Login"
         # elif not bcrypt.checkpw(postData['password'].encode(), User.objects.get(email = postData['email']).password.encode():
         #     errors["success"] = "Invalid Login"
-        elif not User.objects.get(email = postData['email']).password:
-            errors["success"] = "Invalid Login"
+        elif not User.objects.get(email = postData['email']).password == postData['password']:
+            errors["message"] = "Invalid Login"
         return errors
     def Jsonize(self, trial):
         user = {}
