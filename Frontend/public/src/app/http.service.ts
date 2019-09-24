@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {catchError} from 'rxjs/operators';
+import {throwError} from 'rxjs';
 
+export interface ServerValidationResponse {
+  email: string;
+  password: string;
+  first_name?: string;
+  last_name?: string;
+  confirm?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +33,12 @@ export class HttpService {
     return this._http.get('/session');
   }
 
-  createUser(userObj) {
+  // createUser(userObj) {
+  //   return this._http.post('http://localhost:8000/preregister', userObj);
+  //     // .pipe(catchError(HttpService.handleError));
+  // }
+
+  createUser (userObj) {
     return this._http.post('http://localhost:8000/preregister', userObj);
   }
 
@@ -40,5 +54,9 @@ export class HttpService {
   sendImage(imgObject) {
     return this._http.post('http://localhost:8000/capture', imgObject);
   }
+
+  // @ts-ignore
+  // tslint:disable-next-line:member-ordering
+
 }
 

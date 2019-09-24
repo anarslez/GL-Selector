@@ -26,6 +26,7 @@ export class CameraComponent implements OnInit, OnDestroy {
   constructor(private _httpService: HttpService) { }
 
   ngOnInit() {
+    console.log(this.inputs);
     this.progress = false;
     AOS.init();
     console.log('Naked ice cream');

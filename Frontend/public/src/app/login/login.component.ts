@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
+import { HttpResponse } from '@angular/common/http';
+import { ServerValidationResponse } from '../http.service';
 
 declare var $: any;
 declare var AOS: any;
@@ -13,7 +15,7 @@ declare var AOS: any;
 export class LoginComponent implements OnInit {
   send: boolean;
   User: object = { email: '', password: '' };
-  error: string;
+  error = {};
   message: string;
   constructor( private _httpService: HttpService, private _redirect: Router ) { }
 
@@ -76,16 +78,23 @@ export class LoginComponent implements OnInit {
   // }
   loginUser() {
     const observable = this._httpService.loginUser(this.User);
-    observable.subscribe((data) => {
+    observable.subscribe((dataRes: any) => {
       let response: any;
-      response = data;
+      response = dataRes;
       console.log(response);
-      if (response.message === 'Invalid Login') {
-        this.error = response.message;
-      } else {
-        this._redirect.navigate(['/dashboard']);
-      }
+      this._redirect.navigate(['/dashboard']);
+    }, (errorRes: HttpResponse<ServerValidationResponse>) => {
+      this.error = errorRes['error'];
     });
+    // observable.subscribe((dataRes: any) => {
+    //   let response: any;
+    //   response = dataRes;
+    //   console.log(response);
+    //   this._redirect.navigate(['/dashboard']);
+    // }, (errorRes: HttpResponse<serverValidationResponse>) => {
+    //   this.isLoading = false;
+    //   this.error = errorRes['error'];
+    // });
   }
 
 }

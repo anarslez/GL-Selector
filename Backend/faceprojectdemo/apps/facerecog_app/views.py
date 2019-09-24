@@ -232,8 +232,8 @@ def preregister(request): # Checks registration info for validity and to prevent
     body = json.loads(request.body.decode('utf-8'))
     errors = User.objects.basic_validator(body)
     if len(errors):
-        print(errors)
-        return HttpResponse(json.dumps(errors), content_type="application/json")
+        print(errors, body)
+        return HttpResponse(json.dumps(errors), content_type="application/json", status=400)
     else:
         context = {
             'success': True
@@ -253,7 +253,7 @@ def login(request): # Logs the user in
     errors = User.objects.login_validator(body)
     if len(errors):
         print(errors)
-        return HttpResponse(json.dumps(errors), content_type="application/json")
+        return HttpResponse(json.dumps(errors), content_type="application/json", status=400)
     else:
         user = User.objects.get(email=body['email'])
         print(user)
@@ -261,7 +261,7 @@ def login(request): # Logs the user in
                 'message': 'success',
                 'user': model_to_dict(user),
             }
-        return HttpResponse(json.dumps(context_before), content_type="application/json")
+        return HttpResponse(json.dumps(context_before), content_type="application/json", status=200)
 
 def retrieve(request): # Retrieves user info after successful login
     body = json.loads(request.body.decode('utf-8'))
