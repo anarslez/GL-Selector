@@ -20,14 +20,14 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.message = '';
     this.send = true;
-    const observable = this._httpService.check();
-    observable.subscribe(data => {
-      if (data['token'] > 0) {
-        this._redirect.navigate(['/dashboard']);
-      } else {
-        this.message = data['message'];
-      }
-    });
+    // const observable = this._httpService.check();
+    // observable.subscribe(data => {
+    //   if (data['token'] > 0) {
+    //     this._redirect.navigate(['/dashboard']);
+    //   } else {
+    //     this.message = data['message'];
+    //   }s
+    // });
     AOS.init();
     $('.ui.form')
       .form({
@@ -81,8 +81,7 @@ export class LoginComponent implements OnInit {
       response = data;
       console.log(response);
       if (response.message === 'Invalid Login') {
-        // console.log(this.User['email']);
-        this.User = {email: this.User['email']};
+        this.error = response.message;
       } else {
         this._redirect.navigate(['/dashboard']);
       }

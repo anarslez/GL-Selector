@@ -16,12 +16,12 @@
         <h1 class="font" style="color:white;">Create your account</h1>
       </div>
 
-      <form (submit)="createUser()" id='signup-form' class="ui form" autocomplete="off">
+      <form (ngSubmit)="createUser()" id='signup-form' class="ui form" data-aos="fade" data-aos-duration="1400" data-aos-delay="100" autocomplete="off">
         <div class='many_fields'>
           <div  id="fnamediv" class="field">
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input id="fname" name="User.first_name" [(ngModel)]="User.first_name" type="text" placeholder="First Name" name="name">
+              <input id="fname" name="User.first_name" [(ngModel)]="User.first_name" type="text" placeholder=" First Name" name="name">
             </div>
           </div>
           <div  id="lnamediv" class="field">
@@ -35,7 +35,7 @@
           <div class="field">
             <div class="ui left icon input">
               <i class="envelope icon"></i>
-              <input type="text" name="User.email" [(ngModel)]="User.email" placeholder="Email" name="email">
+              <input type="text" name="User.email" [(ngModel)]="User.email" placeholder=" Email" name="email">
             </div>
           </div>
           <div *ngIf="email" class="mistakes" style="color: red;">
@@ -44,7 +44,7 @@
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input type="password" name="User.password" [(ngModel)]="User.password" placeholder="Password" name="password">
+              <input type="password" name="User.password" [(ngModel)]="User.password" placeholder=" Password" name="password">
             </div>
           </div>
           <div *ngIf="password" class="mistakes">
@@ -53,7 +53,7 @@
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input type="password" name="User.confirm" [(ngModel)]="User.confirm" placeholder="Confirm Password" name="confirm">
+              <input type="password" name="User.confirm" [(ngModel)]="User.confirm" placeholder=" Confirm Password" name="confirm">
             </div>
           </div>
           <div *ngIf="confirm" class="mistakes">
@@ -65,7 +65,7 @@
             <input id="nextbutton" type="submit" value="Next" class="ui inverted blue medium button next1 ">
           </div>
 
-          <p id="link" >Already have an account? <a [routerLink]="['/login']">Login Here</a></p> 
+          <p id="link" >Already have an account? <a [routerLink]="['/login']">Login Here</a></p>
         </div>
         <!-- <div class="ui error message"></div> -->
 

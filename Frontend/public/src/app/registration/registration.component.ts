@@ -20,12 +20,12 @@ export class RegistrationComponent implements OnInit {
   constructor( private _httpService: HttpService , private _redirect: Router ) { }
 
   ngOnInit() {
-    const observable = this._httpService.check();
-    observable.subscribe(data => {
-      if (data['token'] > 0) {
-        this._redirect.navigate(['/dashboard']);
-      }
-    });
+    // const observable = this._httpService.check();
+    // observable.subscribe(data => {
+    //   if (data['token'] > 0) {
+    //     this._redirect.navigate(['/dashboard']);
+    //   }
+    // });
     this.fullname = false;
     this.email = false;
     this.password = false;
@@ -53,8 +53,8 @@ export class RegistrationComponent implements OnInit {
           $('#accountS').addClass('disabled');
           $('#socialP').removeClass('disabled');
           $('#social').transition('fly right');
-          $('#social button').removeClass('inverted violet');
-          $('#social button').addClass('inverted blue');
+          // $('#social button').removeClass('inverted violet');
+          // $('#social button').addClass('inverted blue');
           section = true;
         } else {
           $('.next1').attr('disabled', false);

@@ -17,7 +17,7 @@
   <div class='cam-wrapper'>
     <img class='container' id='capture' src="{{ src_img }}">
     <div class='btn-options'>
-      <button id='send' class="ui labeled black icon button toggle">
+      <button (click)="sendImageFromService()" class="ui labeled black icon button toggle">
         <i class="paper plane outline icon"></i>
         Analyze it!
       </button>
@@ -28,7 +28,7 @@
   <button *ngIf="progress" [routerLink]="['/dashboard']" class="ui medium button progress">Successfully registered! Go to the Dashboard</button>
   <!-- <button [routerLink]="['/dashboard']" class="ui medium button submit">Use This Picture!</button> -->
 </div>
-<div class="ui longer modal fart">
+<div class="ui longer modal results">
   <div class="header">Results</div>
   <div class="image content">
     <div class="image">
@@ -62,7 +62,7 @@
         <p *ngIf="face_shape =='round'">
           A Round face has softer angles with slightly wider cheekbones and an equally wide forehead and jaw.
         </p>
-        RECOMMENDATION: 
+        RECOMMENDATION:
         <p *ngIf="face_shape =='oval'">
             We recommend rectangle, square, wayfarer, browline, oval, aviator, round, geometric, and wrap frames.
             Find frames for oval faces <a target = "_blank" href="https://www.coastal.com/glasses/oval-face">here</a>!

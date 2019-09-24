@@ -11,6 +11,7 @@ import json
 import requests
 import datetime
 from django.http.response import JsonResponse
+from django.forms.models import model_to_dict
 from pathlib import Path
 import numpy as np
 
@@ -178,7 +179,7 @@ def capture(request): # Through line 168. Analyzes pics sent to '/capture'
             print('wrote image')
             #context objects to kickback
             with open('face.jpeg', "rb") as image_file:
-                encoded_string = str(base64.b64encode(image_file.read()))   
+                encoded_string = str(base64.b64encode(image_file.read()))
                 encoded_string=encoded_string[2:-1]
             if body['component'] == 'register' :
                 if len(User.objects.filter(email=body['User']['email']))==0:
@@ -211,7 +212,7 @@ def capture(request): # Through line 168. Analyzes pics sent to '/capture'
                 }
             print("No issues")
             return HttpResponse(json.dumps(context_before), content_type="application/json")
-    else:    
+    else:
         errors["faces"] = "No faces detected please take another picture"
         print(errors)
         cv2.imwrite('face.jpeg',image)
@@ -258,7 +259,7 @@ def login(request): # Logs the user in
         print(user)
         context_before = {
                 'message': 'success',
-                'id': user.id,
+                'user': model_to_dict(user),
             }
         return HttpResponse(json.dumps(context_before), content_type="application/json")
 

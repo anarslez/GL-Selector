@@ -36,7 +36,7 @@ export class CameraComponent implements OnInit, OnDestroy {
     console.log('Sicko Mode');
     const self = this;
     $('#take-picture').hide();
-    $('#send').hide();
+    // $('#send').hide();
     $('#cam').click(function () {
       // use MediaDevices API
       // docs: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
@@ -46,7 +46,7 @@ export class CameraComponent implements OnInit, OnDestroy {
         navigator.mediaDevices.getUserMedia({ video: true })
           // permission granted:
           .then(function (stream) {
-            $('#take-picture').toggle();
+            $('#take-picture').show();
             $(this).toggleClass('start');
             $('#cam i').toggleClass('play stop');
             video.srcObject = stream;
@@ -80,9 +80,7 @@ export class CameraComponent implements OnInit, OnDestroy {
         self.src_img = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
         self.src_img = canvas.toDataURL('image/png');
         // console.log(self.src_img);
-        const str = self.src_img;
-        const newstr = str.substring(22);
-        $('#send').show();
+        // $('#send').show();
         // console.log(newstr);
       }
     });
@@ -92,22 +90,22 @@ export class CameraComponent implements OnInit, OnDestroy {
     $('#take-picture').on('click', function(ev) {
       ev.preventDefault();
     });
-    $('#send').on('click', function(ev) {
-      ev.preventDefault();
-      self.sendImageFromService();
-      $('.fart').modal('show');
-      setTimeout(() => {
-        $('.fart').modal('hide');
-      }, 180000);
-    });
-    $('.fart').modal('attach events', '#close', 'hide');
-    $('.fart').modal('attach events', '#send', 'show');
+    // $('#send').on('click', function(ev) {
+    //   ev.preventDefault();
+    //   self.sendImageFromService();
+    //   $('.fart').modal('show');
+    //   setTimeout(() => {
+    //     $('.fart').modal('hide');
+    //   }, 180000);
+    // });
   }
 
   sendImageFromService() {
     console.log(this.inputs['User']);
     const newstr = this.src_img.substring(22);
     const info = {demo: true, img_data: newstr, component: this.inputs['component']};
+    // const info = {demo: true, img_data: newstr, component: this.inputs['component'], User: this.inputs['User'};
+    // console.log('hello:  ' + this.inputs);
     if (this.inputs['component'] === 'register') {
       console.log('Register is the value of demo');
       console.log(this.inputs['User']);
@@ -145,9 +143,11 @@ export class CameraComponent implements OnInit, OnDestroy {
         // console.log('no errors');
       }
     });
+    $('.results').modal('show');
+    $('.results').modal('attach events', '#close', 'hide');
   }
 
   ngOnDestroy() {
-    $('.fart').remove();
+    $('.results').remove();
   }
 }
