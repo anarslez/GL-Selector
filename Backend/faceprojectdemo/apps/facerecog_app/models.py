@@ -31,7 +31,7 @@ class UserManager(models.Manager):
             errors["success"] = "Invalid Login"
         # elif not bcrypt.checkpw(postData['password'].encode(), User.objects.get(email = postData['email']).password.encode():
         #     errors["success"] = "Invalid Login"
-        elif not User.objects.get(email = postData['email']).password:
+        elif not User.objects.get(email = postData['email']).password == postData['password']:
             errors["success"] = "Invalid Login"
         return errors
     def Jsonize(self, trial):

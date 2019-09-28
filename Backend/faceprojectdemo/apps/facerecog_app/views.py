@@ -251,9 +251,11 @@ def login(request): # Logs the user in
     body = json.loads(request.body.decode('utf-8'))
     errors = User.objects.login_validator(body)
     if len(errors):
+        print(errors)
         return HttpResponse(json.dumps(errors), content_type="application/json")
     else:
         user = User.objects.get(email=body['email'])
+        print(body)
         context_before = {
                 'success': 'success',
                 'id': user.id,
