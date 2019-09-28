@@ -1,51 +1,42 @@
 from __future__ import unicode_literals
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-import re
-import bcrypt
+
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
-class UserManager(models.Manager):
-    def basic_validator(self, postData):
-        errors = {}
-        if len(postData['first_name']) < 2:
-            errors["first_name"] = "First name should be at least 2 characters"
-        elif not NAME_REGEX.match(postData['first_name']):
-            errors["first_name"] = "First name should only consist of alphanumeric characters (A-Z). No periods or commas"
-        if len(postData['last_name']) < 2:
-            errors["last_name"] = "Last name should be at least 2 characters"
-        elif not NAME_REGEX.match(postData['last_name']):
-            errors["last_name"] = "Last name should only consist of alphanumeric characters (A-Z). No periods or commas"
-        if not EMAIL_REGEX.match(postData['email']):
-            errors["email"] = "Invalid email"
-        if len(User.objects.filter(email = postData['email'])) > 0:
-            errors["email"] = "Email previously registered. Contact for information on this account (847) 528-1339"
-        if len(postData['password']) < 8:
-            errors["password"] = "Password should be at least 8 characters"
-        if postData['password'] != postData['confirm']:
-            errors["confirm"] = "Passwords do not match"
-        return errors
-    def login_validator(self, postData):
-        errors = {}
-        if len(User.objects.filter(email = postData['email'])) == 0:
-            errors["email"] = "Invalid Email"
-        # elif not bcrypt.checkpw(postData['password'].encode(), User.objects.get(email = postData['email']).password.encode():
-        #     errors["success"] = "Invalid Login"
-        elif not User.objects.get(email = postData['email']).password == postData['password']:
-            errors["password"] = "Invalid Password"
-        return errors
-    def Jsonize(self, trial):
-        user = {}
-        user['first_name'] = trial.first_name
-        user['last_name'] = trial.last_name
+## USER MODELS
+class UserManager(BaseUserManager):
+    """Define a model manager for User model with no username field."""
+    use_in_migrations = True
+    def _create_user(self, email, password, **extra_fields):
+        print("********************_create_user********************")
+        """Create and save a User with the given email and password."""
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
         return user
-    def reset(self, id, password):
-        print(password)
-        user = User.objects.get(id=id)
-        newpass = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-        user.password = newpass
-        user.save()
-        return
+    def create_user(self, email, password=None, **extra_fields):
+        print("********************create_user********************")
+        """Create and save a regular User with the given email and password."""
+        return self._create_user(email, password, **extra_fields)
+    def create_superuser(self, email, password, **extra_fields):
+        print("********************create_superuser********************")
+        """Create and save a SuperUser with the given email and password."""
+        return self._create_user(email, password, **extra_fields)
+
+class User(AbstractUser):
+    email = models.EmailField(('email address'), unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    username = None
+    date_joined = None
+    USERNAME_FIELD = 'email'
+    objects = UserManager()
+
 
 class FaceManager(models.Manager):
     def Jsonize(self, trial):
@@ -57,17 +48,7 @@ class FaceManager(models.Manager):
         face['image'] = trial.image
         return face
         
-class User(models.Model):
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    email = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    preference = models.IntegerField(default=0)
-    objects = UserManager()
-    def __repr__(self):
-        return "<User object: {} {} {} {}>".format(self.first_name, self.last_name, self.email, self.password)
+
 
 class Face(models.Model):
     chin_angle = models.FloatField()
@@ -79,5 +60,3 @@ class Face(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = FaceManager()
-    def __repr__(self):
-        return "<Face object: {} {} {} {} {} {}>".format(self.chin_angle, self.mofa_ratio, self.hlmo_angle, self.shape, self.image, self.user)

@@ -14,42 +14,18 @@ from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
 from pathlib import Path
 import numpy as np
-from django.contrib import auth, messages
-from django.contrib.auth.models import User, Group
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import api_view
-from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from .serializers import *
-from .permissions import *
-from .models import *
-
-def test(request):
-    print("IN REQUEST")
-    return JsonResponse({'Success': True, 'Message': 'Talked to the API!'})
-
-@api_view(['POST'])
-def login(request):
-    user = auth.authenticate(email=request.data['email'], password=request.data['password'])
-    if user != None and user.is_active:
-        # user.backend = 'django.contrib.auth.backends.ModelBackend'
-        auth.login(request, user)
-        response = Response({"success": True})
-        response.set_cookie("user_id", user.id)
-        return response
-    return Response({'success': False})
-
-@api_view(['GET'])
-def logout(request):
-    auth.logout(request)
-    return Response("Logged out")
-
-def capture(request):
-     # Through line 168. Analyzes pics sent to '/capture'
+def capture(request): # Through line 168. Analyzes pics sent to '/capture'
     body = json.loads(request.body.decode('utf-8'))
+    print(body['component'])
+    if 'User' in body:
+        print(body['User'])
+    else:
+        print('Raza')
+    if 'id' in body:
+        print(body['id'])
+    else:
+        print('Eeeeeaaaarrrrrrlllllllllll')
     with open("face.jpeg", "wb") as fh:
         fh.write(base64.b64decode(body['img_data']))
     image = cv2.imread("face.jpeg")
@@ -205,6 +181,22 @@ def capture(request):
             with open('face.jpeg', "rb") as image_file:
                 encoded_string = str(base64.b64encode(image_file.read()))
                 encoded_string=encoded_string[2:-1]
+            if body['component'] == 'register' :
+                if len(User.objects.filter(email=body['User']['email']))==0:
+                    print("created user")
+                    password = body['User']['password']
+                    request.session['user_id'] = User.objects.create(first_name = body['User']['first_name'], last_name = body['User']['last_name'], email = body['User']['email'], password = password)
+                else:
+                    print("user already registered")
+                    user = User.objects.get(email = body['User']['email'])
+                    user.preference += 1
+                    print("preference is now "+str(user.preference))
+                    Face.objects.create(chin_angle = chinangle, mofa_ratio = mofa, hlmo_ratio = hairangle, shape = shape, image = encoded_string, user = user)
+            elif body['component'] == 'dashboard' :
+                user = User.objects.get(id = body['id'])
+                Face.objects.create(chin_angle = chinangle, mofa_ratio = mofa, hlmo_ratio = hairangle, shape = shape, image = encoded_string, user = user)
+                print("created another face for an existing user")
+
             if 'user_id' in request.session:
                 context_before = {
                     "error": False,
@@ -236,6 +228,40 @@ def capture(request):
         # return requests.post('http:local:4200/', context)
         return HttpResponse(json.dumps(context_before), content_type="application/json")
 
+def preregister(request): # Checks registration info for validity and to prevent multiple registers
+    body = json.loads(request.body.decode('utf-8'))
+    errors = User.objects.basic_validator(body)
+    if len(errors):
+        print(errors, body)
+        return HttpResponse(json.dumps(errors), content_type="application/json", status=400)
+    else:
+        context = {
+            'success': True
+        }
+        return HttpResponse(json.dumps(context), content_type="application/json")
+        password = bcrypt.hashpw(body['password'].encode('utf-8'), bcrypt.gensalt()).decode()
+        # face = Face.objects.create()
+        User.objects.create(first_name = body['first_name'], last_name = body['last_name'], email = body['email'], password = password)
+        session['id'] = User.objects.get(email = body['email']).id
+        context = {
+            'message': 'success'
+        }
+        return HttpResponse(json.dumps(context), content_type="application/json")
+        
+def login(request): # Logs the user in
+    body = json.loads(request.body.decode('utf-8'))
+    errors = User.objects.login_validator(body)
+    if len(errors):
+        print(errors)
+        return HttpResponse(json.dumps(errors), content_type="application/json", status=400)
+    else:
+        user = User.objects.get(email=body['email'])
+        print(user)
+        context_before = {
+                'message': 'success',
+                'user': model_to_dict(user),
+            }
+        return HttpResponse(json.dumps(context_before), content_type="application/json", status=200)
 
 def retrieve(request): # Retrieves user info after successful login
     body = json.loads(request.body.decode('utf-8'))
