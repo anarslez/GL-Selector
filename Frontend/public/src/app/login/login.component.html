@@ -1,21 +1,25 @@
 <div class='container' data-aos='fade' data-aos-duration="1400" data-aos-delay="200">
-  <span class="error">{{message}}</span>
-  <span class="error">{{ error }}</span>
+  <div *ngIf="error.email" class="error">
+    {{ error.email }}
+  </div>
+  <div *ngIf="error.password" class="error">
+    {{ error.password }}
+  </div>
   <h2>Login</h2>
-  <form class ="ui form" (submit) = "loginUser()" autocomplete="on">
+  <form class ="ui form" (ngSubmit)="loginUser()" autocomplete="on">
     <div class="column">
       <div class="ui form">
         <div class="ui error message"></div>
         <div class="field">
           <div class="ui left icon input">
             <i class="envelope icon"></i>
-            <input type="text" name="User.email" [(ngModel)]="User.email" placeholder="Email" name="email">
+            <input type="text" name="User.email" [(ngModel)]="User.email" placeholder="Email">
           </div>
         </div>
         <div class="field">
           <div class="ui left icon input">
             <i class="lock icon"></i>
-            <input type="Password" name="User.password" [(ngModel)]="User.password" placeholder="Password" name="password">
+            <input type="Password" name="User.password" [(ngModel)]="User.password" placeholder="Password">
           </div>
         </div>
         <input id="submit" type="submit" value="Login">

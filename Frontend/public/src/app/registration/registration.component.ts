@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { ServerValidationResponse } from '../http.service';
+import {HttpResponse} from '@angular/common/http';
+
 declare var $: any;
 
 
@@ -9,6 +13,7 @@ declare var $: any;
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
 })
+
 export class RegistrationComponent implements OnInit {
   TheEmail: string;
   fullname: boolean;
@@ -17,15 +22,20 @@ export class RegistrationComponent implements OnInit {
   confirm: boolean;
   User: object = {first_name: '', last_name: '', email: '', password: '', confirm: '' };
   inputs = { send: true, component: 'register', User: null };
+  error = {};
+
   constructor( private _httpService: HttpService , private _redirect: Router ) { }
 
   ngOnInit() {
-    const observable = this._httpService.check();
-    observable.subscribe(data => {
-      if (data['token'] > 0) {
-        this._redirect.navigate(['/dashboard']);
-      }
-    });
+    console.log('////////////////');
+    console.log(this.error);
+    console.log('////////////////');
+    // const observable = this._httpService.check();
+    // observable.subscribe(data => {
+    //   if (data['token'] > 0) {
+    //     this._redirect.navigate(['/dashboard']);
+    //   }
+    // });
     this.fullname = false;
     this.email = false;
     this.password = false;
@@ -53,8 +63,8 @@ export class RegistrationComponent implements OnInit {
           $('#accountS').addClass('disabled');
           $('#socialP').removeClass('disabled');
           $('#social').transition('fly right');
-          $('#social button').removeClass('inverted violet');
-          $('#social button').addClass('inverted blue');
+          // $('#social button').removeClass('inverted violet');
+          // $('#social button').addClass('inverted blue');
           section = true;
         } else {
           $('.next1').attr('disabled', false);
@@ -71,6 +81,7 @@ export class RegistrationComponent implements OnInit {
         }
       });
     }
+    // all this commented out stuff makes it so that client hits the server twice
     $('#signup-form').on('submit', function(ev) {
       $('.next1').attr('disabled', true);
       ev.preventDefault();
@@ -89,10 +100,13 @@ export class RegistrationComponent implements OnInit {
 
   createUser() {
     const preregister = this._httpService.createUser(this.User);
-    preregister.subscribe((info: any) => {
-      if (info['precheck'] === true) {
-        this.inputs.User = this.User;
-      }
+    preregister.subscribe((dataRes: any) => {
+      let response: any;
+      response = dataRes;
+      console.log(response);
+      // this._redirect.navigate(['/dashboard']);
+    }, (errorRes: HttpResponse<ServerValidationResponse>) => {
+      this.error = errorRes['error'];
     });
   }
 }

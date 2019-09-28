@@ -27,7 +27,7 @@ import { CameraComponent } from './camera/camera.component';
     DashboardComponent,
     FooterComponent,
     GetstartedComponent,
-    CameraComponent
+    CameraComponent,
   ],
   imports: [
     BrowserModule,

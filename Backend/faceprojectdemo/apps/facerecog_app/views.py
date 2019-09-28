@@ -11,6 +11,7 @@ import json
 import requests
 import datetime
 from django.http.response import JsonResponse
+from django.forms.models import model_to_dict
 from pathlib import Path
 import numpy as np
 
@@ -178,7 +179,7 @@ def capture(request): # Through line 168. Analyzes pics sent to '/capture'
             print('wrote image')
             #context objects to kickback
             with open('face.jpeg', "rb") as image_file:
-                encoded_string = str(base64.b64encode(image_file.read()))   
+                encoded_string = str(base64.b64encode(image_file.read()))
                 encoded_string=encoded_string[2:-1]
             if body['component'] == 'register' :
                 if len(User.objects.filter(email=body['User']['email']))==0:
@@ -211,7 +212,7 @@ def capture(request): # Through line 168. Analyzes pics sent to '/capture'
                 }
             print("No issues")
             return HttpResponse(json.dumps(context_before), content_type="application/json")
-    else:    
+    else:
         errors["faces"] = "No faces detected please take another picture"
         print(errors)
         cv2.imwrite('face.jpeg',image)
@@ -231,8 +232,8 @@ def preregister(request): # Checks registration info for validity and to prevent
     body = json.loads(request.body.decode('utf-8'))
     errors = User.objects.basic_validator(body)
     if len(errors):
-        print(errors)
-        return HttpResponse(json.dumps(errors), content_type="application/json")
+        print(errors, body)
+        return HttpResponse(json.dumps(errors), content_type="application/json", status=400)
     else:
         context = {
             'success': True
@@ -243,7 +244,7 @@ def preregister(request): # Checks registration info for validity and to prevent
         User.objects.create(first_name = body['first_name'], last_name = body['last_name'], email = body['email'], password = password)
         session['id'] = User.objects.get(email = body['email']).id
         context = {
-            'success': 'success'
+            'message': 'success'
         }
         return HttpResponse(json.dumps(context), content_type="application/json")
         
@@ -252,15 +253,15 @@ def login(request): # Logs the user in
     errors = User.objects.login_validator(body)
     if len(errors):
         print(errors)
-        return HttpResponse(json.dumps(errors), content_type="application/json")
+        return HttpResponse(json.dumps(errors), content_type="application/json", status=400)
     else:
         user = User.objects.get(email=body['email'])
-        print(body)
+        print(user)
         context_before = {
-                'success': 'success',
-                'id': user.id,
+                'message': 'success',
+                'user': model_to_dict(user),
             }
-        return HttpResponse(json.dumps(context_before), content_type="application/json")
+        return HttpResponse(json.dumps(context_before), content_type="application/json", status=200)
 
 def retrieve(request): # Retrieves user info after successful login
     body = json.loads(request.body.decode('utf-8'))

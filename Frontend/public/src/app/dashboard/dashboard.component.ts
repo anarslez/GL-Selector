@@ -17,19 +17,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor( private _httpService: HttpService , private _redirect: Router ) { }
 
   ngOnInit() {
-    const observable = this._httpService.check();
-    observable.subscribe(data => {
-      if (data['token'] < 1) {
-        this._redirect.navigate(['/login']);
-      } else {
-        this.inputs.id = data['token'];
-        const retrieve = this._httpService.retrieve(data['token']);
-        retrieve.subscribe((letter) => {
-          this.User = letter;
-          console.log(letter);
-        });
-      }
-    });
+    // const observable = this._httpService.check();
+    // observable.subscribe(data => {
+    //   if (data['token'] < 1) {
+    //     this._redirect.navigate(['/login']);
+    //   } else {
+    //     this.inputs.id = data['token'];
+    //     const retrieve = this._httpService.retrieve(data['token']);
+    //     retrieve.subscribe((letter) => {
+    //       this.User = letter;
+    //       console.log(letter);
+    //     });
+    //   }
+    // });
     console.log(this.inputs);
     this.activity = 0;
     const self = this;
