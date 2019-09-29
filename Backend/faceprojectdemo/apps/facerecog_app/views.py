@@ -1,15 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
+from django.views.generic import TemplateView
 from .models import *
-from django.contrib import messages
-import bcrypt
-import cv2
-import sys
-import imutils
-import math
-import base64
-import json
-import requests
-import datetime
+import bcrypt, cv2, sys, imutils, math, base64, json, requests, datetime
 from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
 from pathlib import Path
@@ -24,8 +16,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import *
-from .permissions import *
 from .models import *
+# from .permissions import *
 
 def test(request):
     print("IN REQUEST")
@@ -33,6 +25,7 @@ def test(request):
 
 @api_view(['POST'])
 def login(request):
+    print(request.data)
     user = auth.authenticate(email=request.data['email'], password=request.data['password'])
     if user != None and user.is_active:
         # user.backend = 'django.contrib.auth.backends.ModelBackend'
@@ -40,7 +33,21 @@ def login(request):
         response = Response({"success": True})
         response.set_cookie("user_id", user.id)
         return response
-    return Response({'success': False})
+    return Response({'success': False}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def register(request):
+    serializer = UserSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+       serializer.save()
+       response = Response(serializer.data)
+       response.status = status.HTTP_201_CREATED
+       # user = User.objects.get(id=serializer.data['id'])
+       # if user is not None and user.is_active:
+       #     auth.login(request, user)
+       return response
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def logout(request):

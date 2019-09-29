@@ -82,20 +82,20 @@ export class RegistrationComponent implements OnInit {
       });
     }
     // all this commented out stuff makes it so that client hits the server twice
-    $('#signup-form').on('submit', function(ev) {
-      $('.next1').attr('disabled', true);
-      ev.preventDefault();
-      action();
-    });
-    $('.prev1').on('click', function(ev) {
-      $('.next1').attr('disabled', false);
-      self.User['precheck'] = true;
-      ev.preventDefault();
-      $('#accountS').removeClass('disabled');
-      $('#socialP').addClass('disabled');
-      $('#social').transition('hide');
-      $('#account').transition('fly right');
-    });
+    // $('#signup-form').on('submit', function(ev) {
+    //   $('.next1').attr('disabled', true);
+    //   ev.preventDefault();
+    //   action();
+    // });
+    // $('.prev1').on('click', function(ev) {
+    //   $('.next1').attr('disabled', false);
+    //   self.User['precheck'] = true;
+    //   ev.preventDefault();
+    //   $('#accountS').removeClass('disabled');
+    //   $('#socialP').addClass('disabled');
+    //   $('#social').transition('hide');
+    //   $('#account').transition('fly right');
+    // });
   }
 
   createUser() {
@@ -104,9 +104,10 @@ export class RegistrationComponent implements OnInit {
       let response: any;
       response = dataRes;
       console.log(response);
-      // this._redirect.navigate(['/dashboard']);
+      this._redirect.navigate(['/dashboard']);
     }, (errorRes: HttpResponse<ServerValidationResponse>) => {
       this.error = errorRes['error'];
+      console.log(this.error);
     });
   }
 }
