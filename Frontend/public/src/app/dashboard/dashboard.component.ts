@@ -14,7 +14,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   User: object = { first_name: '', last_name: '', email: '', created: '' };
   inputs = { send: true, component: 'dashboard', id: null };
   activity: number;
-  constructor( private _httpService: HttpService , private _redirect: Router ) { }
+  constructor (
+    private _httpService: HttpService,
+    private _redirect: Router,
+  ) { }
 
   ngOnInit() {
     // const observable = this._httpService.check();
@@ -30,21 +33,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //     });
     //   }
     // });
-    console.log(this.inputs);
-    this.activity = 0;
-    const self = this;
-    const timing = 1800000;
-    setTimeout(function () {
-      console.log('Giraffe');
-      if ( self.activity === 0) {
-        const morty = self._httpService.loginPost(-1);
-        morty.subscribe(() => {
-          self._redirect.navigate(['/login']);
-        });
-      } else {
-        console.log('Addison');
-      }
-    }, timing);
+    // console.log(this.inputs);
+    // this.activity = 0;
+    // const self = this;
+    // const timing = 1800000;
+    // setTimeout(function () {
+    //   console.log('Giraffe');
+    //   if ( self.activity === 0) {
+    //     const morty = self._httpService.loginPost(-1);
+    //     morty.subscribe(() => {
+    //       self._redirect.navigate(['/login']);
+    //     });
+    //   } else {
+    //     console.log('Addison');
+    //   }
+    // }, timing);
     $('.camera').css('display', 'none');
     $('.newpic').on('click', function(ev) {
       ev.preventDefault();
@@ -62,20 +65,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
     });
     $('.container').on('click', function() {
-      self.activity++;
-      const check = self.activity;
+      // self.activity++;
+      // const check = self.activity;
       console.log('Strahan');
-      setTimeout(function () {
-        console.log('Giraffe');
-        if (check === self.activity) {
-          const morty = self._httpService.loginPost(-1);
-          morty.subscribe(() => {
-            self._redirect.navigate(['/login']);
-          });
-        } else {
-          console.log('Addison');
-        }
-      }, timing);
+      // setTimeout(function () {
+      //   console.log('Giraffe');
+      //   if (check === self.activity) {
+      //     const morty = self._httpService.loginPost(-1);
+      //     morty.subscribe(() => {
+      //       self._redirect.navigate(['/login']);
+      //     });
+      //   } else {
+      //     console.log('Addison');
+      //   }
+      // }, timing);
     });
     $('.gallery').modal('attach events', '.close', 'hide');
     $('.gallery').modal('attach events', '#toggle', 'show');
@@ -83,11 +86,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   Logout() {
-    const observable = this._httpService.logout();
-    observable.subscribe((data) => {
-      console.log(data);
-      this._redirect.navigate(['/login']);
-    });
   }
 
   ngOnDestroy() {

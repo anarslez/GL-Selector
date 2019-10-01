@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { ServerValidationResponse } from '../http.service';
 import {HttpResponse} from '@angular/common/http';
 
-declare var $: any;
+import { ServerValidationResponse } from '../http.service';
 
+declare var $: any;
 
 @Component({
   selector: 'app-registration',
@@ -24,12 +24,12 @@ export class RegistrationComponent implements OnInit {
   inputs = { send: true, component: 'register', User: null };
   error = {};
 
-  constructor( private _httpService: HttpService , private _redirect: Router ) { }
+  constructor (
+    private _httpService: HttpService,
+    private _redirect: Router,
+  ) { }
 
   ngOnInit() {
-    console.log('////////////////');
-    console.log(this.error);
-    console.log('////////////////');
     // const observable = this._httpService.check();
     // observable.subscribe(data => {
     //   if (data['token'] > 0) {

@@ -1,19 +1,22 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import TemplateView
-from .models import *
-import bcrypt, cv2, sys, imutils, math, base64, json, requests, datetime
 from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
-from pathlib import Path
-import numpy as np
 from django.contrib import auth, messages
 from django.contrib.auth.models import User, Group
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from pathlib import Path
+
+import bcrypt, cv2, sys, imutils, math, base64, json, requests, datetime
+import numpy as np
+
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import api_view
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import *
 from .models import *
@@ -39,13 +42,23 @@ def login(request):
 def register(request):
     serializer = UserSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
+#        print('/////////////')
+#        print(user.id)
+#        print('/////////////')
        serializer.save()
-       response = Response(serializer.data)
-       response.status = status.HTTP_201_CREATED
+       user = User.objects.get(id=serializer.data['id'])
+       refresh = RefreshToken.for_user(user)
+       response_context = {
+           'data': serializer.data,
+           'token': {
+               'refresh': str(refresh),
+               'access': str(refresh.access_token)
+           }
+       }
        # user = User.objects.get(id=serializer.data['id'])
        # if user is not None and user.is_active:
        #     auth.login(request, user)
-       return response
+       return Response(response_context, status=status.HTTP_201_CREATED)
     print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

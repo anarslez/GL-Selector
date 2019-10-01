@@ -21,16 +21,7 @@ export class HttpService {
   }
 
   retrieve(token) {
-    return this._http.post('http://localhost:8000/retrieve', token);
-  }
-
-  logout() {
-    console.log('Baby boy');
-    return this._http.delete('/session');
-  }
-
-  check() {
-    return this._http.get('/session');
+    return this._http.post('http://localhost:8000/retrieve/', token);
   }
 
   // createUser(userObj) {
@@ -39,12 +30,12 @@ export class HttpService {
   // }
 
   createUser (userObj) {
-    return this._http.post('http://localhost:8000/register', userObj);
+    return this._http.post('http://localhost:8000/register/', userObj);
   }
 
   loginUser(userObj) {
     console.log('in server loginUser', userObj);
-    return this._http.post('http://localhost:8000/login', userObj);
+    return this._http.post('http://localhost:8000/login/', userObj);
   }
 
   loginPost(token) {
@@ -52,7 +43,7 @@ export class HttpService {
   }
 
   sendImage(imgObject) {
-    return this._http.post('http://localhost:8000/capture', imgObject);
+    return this._http.post('http://localhost:8000/capture/', imgObject);
   }
 
   // @ts-ignore

@@ -37,7 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        print(validated_data)
         first_name = serializers.CharField(validators=[self.validate_first_name(validated_data['first_name'])])
         last_name = serializers.CharField(validators=[self.validate_last_name(validated_data['last_name'])])
         user = User.objects.create_user(validated_data['email'])
