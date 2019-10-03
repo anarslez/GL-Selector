@@ -16,6 +16,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'first_name', 'last_name', 'password')
         validators = []
 
+    password = serializers.CharField(min_length=8)
+
     def validate_first_name(self, value):
         if len(value) == 0 or len(value) > 255:
             raise serializers.ValidationError("Invalid first name")
@@ -34,25 +36,12 @@ class UserSerializer(serializers.ModelSerializer):
             value = value[:-1]
         return value
 
-    def confirm_password(self, pw, pwc):
-        if pw != pwc:
-            raise serializers.ValidationError("Passwords do not match")
-        return pw
-
     def create(self, validated_data):
-        print('/////////////////')
-        print(validated_data)
-        print('/////////////////')
         first_name = serializers.CharField(validators=[self.validate_first_name(validated_data['first_name'])])
         last_name = serializers.CharField(validators=[self.validate_last_name(validated_data['last_name'])])
-        password = serializers.CharField(
-            min_length=8,
-#             validators=[self.confirm_password(validated_data['password'], validated_data['confirm'])]
-        )
         user = User.objects.create_user(validated_data['email'])
         for key in validated_data:
             setattr(user, key, validated_data[key])
-#         password = User.objects.make_random_password()
         user.set_password(validated_data['password'])
         user.save()
         return user

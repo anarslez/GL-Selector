@@ -9,7 +9,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from pathlib import Path
 from datetime import datetime, timedelta
 
-import bcrypt, cv2, sys, imutils, math, base64, json, requests, math
+import cv2, sys, imutils, math, base64, json, requests, math
 import numpy as np
 
 from rest_framework import viewsets, status
@@ -23,55 +23,46 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import *
 from .models import *
+from .helper_views import *
 from faceprojectdb.settings import SIMPLE_JWT as jwt_settings
 # from .permissions import *
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def test(request):
     # current date and time
-    now = datetime.timestamp(datetime.now())
-    context = {
-        'now...': math.trunc(now),
+    test_context = {
+        'message': 'test worked, token auth',
     }
-    return Response(context, status=status.HTTP_200_OK)
+    return JsonResponse(test_context, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
     user = auth.authenticate(email=request.data['email'], password=request.data['password'])
-    print(user)
     if user != None and user.is_active:
-        auth.login(request, user)
-        response = Response({"success": True})
-        return response
-    return Response({'success': False}, status=status.HTTP_400_BAD_REQUEST)
+        logged_user = extract_user_data_generate_token(user)
+        response_context = {
+            'data': logged_user
+        }
+        return JsonResponse(response_context, status=status.HTTP_200_OK)
+    return JsonResponse({'error': "Invalid login"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
-    print(request.data)
     serializer = UserSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
-        # obtain user from validated serializer data and use it to manually generate JWT
         user = User.objects.get(id=serializer.data['id'])
-        refresh = RefreshToken.for_user(user)
-        # calculate expiration timestamp based on settings.SIMPLE_JWT.ACCESS_TOKEN_LIFETIME (timedelta value)
-        exp_date = datetime.now() + jwt_settings['ACCESS_TOKEN_LIFETIME']
-        timestamp = datetime.timestamp(exp_date)
-        # send user and token-related info to client
+        logged_user = extract_user_data_generate_token(user)
         response_context = {
-            'data': model_to_dict(user),
-            'token': {
-                'exp': math.trunc(timestamp),
-                'access': str(refresh.access_token),
-                'refresh': str(refresh),
-            }
+            'data': logged_user,
         }
-        return Response(response_context, status=status.HTTP_201_CREATED)
+        return JsonResponse(response_context, status=status.HTTP_201_CREATED)
     print(serializer.errors)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def logout(request):
@@ -83,7 +74,7 @@ def logout(request):
 def retrieve(request): # Retrieves user info after successful login
     body = json.loads(request.body.decode('utf-8'))
     user = User.objects.get(id=body)
-    creation = str(user.created_at.strftime("%B")) + ' ' + str(user.created_at.year)
+#     creation = str(user.created_at.strftime("%B")) + ' ' + str(user.created_at.year)
     facebag = []
     for mug in Face.objects.filter(user=user):
         facebag.append(Face.objects.Jsonize(mug))

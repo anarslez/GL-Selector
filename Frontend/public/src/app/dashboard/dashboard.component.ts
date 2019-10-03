@@ -85,11 +85,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     AOS.init();
   }
 
-  Logout() {
+  onTest() {
+    this._httpService.test().subscribe(resData => {
+      console.log(resData);
+    }, error => {
+      console.log(error);
+    });
   }
 
   ngOnDestroy() {
     $('.gallery').remove();
   }
 
+  logout() {
+  }
 }

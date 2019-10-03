@@ -4,8 +4,6 @@ import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { HttpResponse } from '@angular/common/http';
 
-import { CookieService } from 'ngx-cookie-service';
-
 import { ServerValidationResponse } from '../auth/auth.service';
 
 declare var $: any;
@@ -26,11 +24,7 @@ export class RegistrationComponent implements OnInit {
   inputs = { send: true, component: 'register', User: null };
   error = {};
 
-  constructor (
-    private _httpService: HttpService,
-    private _redirect: Router,
-    private cookieService: CookieService,
-  ) { }
+  constructor (private _httpService: HttpService, private _redirect: Router) { }
 
   ngOnInit() {
     // const observable = this._httpService.check();
@@ -107,8 +101,6 @@ export class RegistrationComponent implements OnInit {
       let response: any;
       response = dataRes;
       console.log(response);
-      this.cookieService.set('access', response['token']['access'], null, null, null, true);
-      this.cookieService.set('refresh', response['token']['refresh']);
       this._redirect.navigate(['/dashboard']);
     }, (errorRes: HttpResponse <ServerValidationResponse>) => {
       this.error = errorRes['error'];

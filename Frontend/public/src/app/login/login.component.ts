@@ -15,16 +15,15 @@ declare var AOS: any;
 })
 
 export class LoginComponent implements OnInit {
-  constructor(
-    private _httpService: HttpService,
-    private _redirect: Router,
-    private _authService: AuthService
-  ) { }
-
   send: boolean;
   User: object = { email: '', password: '' };
   error = {};
   message: string;
+
+  constructor(
+    private _redirect: Router,
+    private _authService: AuthService
+  ) { }
 
   ngOnInit() {
     this.message = '';
@@ -84,14 +83,15 @@ export class LoginComponent implements OnInit {
   //   });
   // }
   loginUser() {
-    const observable = this._httpService.loginUser(this.User);
-    observable.subscribe((dataRes: any) => {
+    const loginObs = this._authService.loginUser(this.User);
+    loginObs.subscribe((dataRes: any) => {
       let response: any;
       response = dataRes;
-      console.log(response);
+      // console.log(response.data.joined_date);
       this._redirect.navigate(['/dashboard']);
     }, (errorRes: HttpResponse<ServerValidationResponse>) => {
       this.error = errorRes['error'];
+      console.log(this.error);
     });
     // observable.subscribe((dataRes: any) => {
     //   let response: any;

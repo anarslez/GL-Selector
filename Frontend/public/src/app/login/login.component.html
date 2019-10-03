@@ -1,9 +1,6 @@
 <div class='container' data-aos='fade' data-aos-duration="1400" data-aos-delay="200">
-  <div *ngIf="error.email" class="error">
-    {{ error.email }}
-  </div>
-  <div *ngIf="error.password" class="error">
-    {{ error.password }}
+  <div *ngIf="error" class="error">
+    {{ error.error }}
   </div>
   <h2>Login</h2>
   <form class ="ui form" (ngSubmit)="loginUser()" autocomplete="on">

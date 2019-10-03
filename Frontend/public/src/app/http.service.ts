@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
@@ -23,17 +23,16 @@ export class HttpService {
     return this._http.post('http://localhost:8000/register/', userObj);
   }
 
-  loginUser(userObj) {
-    console.log('in server loginUser', userObj);
-    return this._http.post('http://localhost:8000/login/', userObj);
-  }
-
   loginPost(token) {
     return this._http.post('/session', {token: token});
   }
 
   sendImage(imgObject) {
     return this._http.post('http://localhost:8000/capture/', imgObject);
+  }
+
+  test() {
+    return this._http.get('http://localhost:8000/test/');
   }
 
   // @ts-ignore
