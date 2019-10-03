@@ -15,6 +15,7 @@ import {  HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GetstartedComponent } from './getstarted/getstarted.component';
 import { CameraComponent } from './camera/camera.component';
+import {CookieService} from "ngx-cookie-service";
 
 
 @NgModule({
@@ -36,7 +37,7 @@ import { CameraComponent } from './camera/camera.component';
     HttpClientModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

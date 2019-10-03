@@ -5,13 +5,16 @@ from django.forms.models import model_to_dict
 from django.contrib import auth, messages
 from django.contrib.auth.models import User, Group
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from pathlib import Path
 
-import bcrypt, cv2, sys, imutils, math, base64, json, requests, datetime
+from pathlib import Path
+from datetime import datetime, timedelta
+
+import bcrypt, cv2, sys, imutils, math, base64, json, requests, math
 import numpy as np
 
-from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import api_view
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -20,45 +23,53 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import *
 from .models import *
+from faceprojectdb.settings import SIMPLE_JWT as jwt_settings
 # from .permissions import *
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def test(request):
-    print("IN REQUEST")
-    return JsonResponse({'Success': True, 'Message': 'Talked to the API!'})
+    # current date and time
+    now = datetime.timestamp(datetime.now())
+    context = {
+        'now...': math.trunc(now),
+    }
+    return Response(context, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login(request):
-    print(request.data)
     user = auth.authenticate(email=request.data['email'], password=request.data['password'])
+    print(user)
     if user != None and user.is_active:
-        # user.backend = 'django.contrib.auth.backends.ModelBackend'
         auth.login(request, user)
         response = Response({"success": True})
-        response.set_cookie("user_id", user.id)
         return response
     return Response({'success': False}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register(request):
+    print(request.data)
     serializer = UserSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
-#        print('/////////////')
-#        print(user.id)
-#        print('/////////////')
-       serializer.save()
-       user = User.objects.get(id=serializer.data['id'])
-       refresh = RefreshToken.for_user(user)
-       response_context = {
-           'data': serializer.data,
-           'token': {
-               'refresh': str(refresh),
-               'access': str(refresh.access_token)
-           }
-       }
-       # user = User.objects.get(id=serializer.data['id'])
-       # if user is not None and user.is_active:
-       #     auth.login(request, user)
-       return Response(response_context, status=status.HTTP_201_CREATED)
+        serializer.save()
+        # obtain user from validated serializer data and use it to manually generate JWT
+        user = User.objects.get(id=serializer.data['id'])
+        refresh = RefreshToken.for_user(user)
+        # calculate expiration timestamp based on settings.SIMPLE_JWT.ACCESS_TOKEN_LIFETIME (timedelta value)
+        exp_date = datetime.now() + jwt_settings['ACCESS_TOKEN_LIFETIME']
+        timestamp = datetime.timestamp(exp_date)
+        # send user and token-related info to client
+        response_context = {
+            'data': model_to_dict(user),
+            'token': {
+                'exp': math.trunc(timestamp),
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+            }
+        }
+        return Response(response_context, status=status.HTTP_201_CREATED)
     print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -67,6 +78,26 @@ def logout(request):
     auth.logout(request)
     return Response("Logged out")
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def retrieve(request): # Retrieves user info after successful login
+    body = json.loads(request.body.decode('utf-8'))
+    user = User.objects.get(id=body)
+    creation = str(user.created_at.strftime("%B")) + ' ' + str(user.created_at.year)
+    facebag = []
+    for mug in Face.objects.filter(user=user):
+        facebag.append(Face.objects.Jsonize(mug))
+    context = {
+        'first_name': user.first_name,
+        'last_name':  user.last_name,
+        'email':  user.email,
+        'created': creation,
+        'faces': facebag,
+    }
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def capture(request):
      # Through line 168. Analyzes pics sent to '/capture'
     body = json.loads(request.body.decode('utf-8'))
@@ -255,20 +286,3 @@ def capture(request):
             }
         # return requests.post('http:local:4200/', context)
         return HttpResponse(json.dumps(context_before), content_type="application/json")
-
-
-def retrieve(request): # Retrieves user info after successful login
-    body = json.loads(request.body.decode('utf-8'))
-    user = User.objects.get(id=body)
-    creation = str(user.created_at.strftime("%B")) + ' ' + str(user.created_at.year)
-    facebag = []
-    for mug in Face.objects.filter(user=user):
-        facebag.append(Face.objects.Jsonize(mug))
-    context = {
-        'first_name': user.first_name,
-        'last_name':  user.last_name,
-        'email':  user.email,
-        'created': creation,
-        'faces': facebag,
-    }
-    return HttpResponse(json.dumps(context), content_type="application/json")

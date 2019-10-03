@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
-import { ServerValidationResponse } from '../http.service';
+
+import { HttpService } from '../http.service';
+import { AuthService, ServerValidationResponse } from '../auth/auth.service';
 
 declare var $: any;
 declare var AOS: any;
@@ -12,12 +13,18 @@ declare var AOS: any;
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent implements OnInit {
+  constructor(
+    private _httpService: HttpService,
+    private _redirect: Router,
+    private _authService: AuthService
+  ) { }
+
   send: boolean;
   User: object = { email: '', password: '' };
   error = {};
   message: string;
-  constructor( private _httpService: HttpService, private _redirect: Router ) { }
 
   ngOnInit() {
     this.message = '';

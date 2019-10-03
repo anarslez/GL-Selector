@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import {HttpResponse} from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 
-import { ServerValidationResponse } from '../http.service';
+import { CookieService } from 'ngx-cookie-service';
+
+import { ServerValidationResponse } from '../auth/auth.service';
 
 declare var $: any;
 
@@ -27,6 +29,7 @@ export class RegistrationComponent implements OnInit {
   constructor (
     private _httpService: HttpService,
     private _redirect: Router,
+    private cookieService: CookieService,
   ) { }
 
   ngOnInit() {
@@ -99,13 +102,15 @@ export class RegistrationComponent implements OnInit {
   }
 
   createUser() {
-    const preregister = this._httpService.createUser(this.User);
-    preregister.subscribe((dataRes: any) => {
+    const register = this._httpService.createUser(this.User);
+    register.subscribe((dataRes: any) => {
       let response: any;
       response = dataRes;
       console.log(response);
+      this.cookieService.set('access', response['token']['access'], null, null, null, true);
+      this.cookieService.set('refresh', response['token']['refresh']);
       this._redirect.navigate(['/dashboard']);
-    }, (errorRes: HttpResponse<ServerValidationResponse>) => {
+    }, (errorRes: HttpResponse <ServerValidationResponse>) => {
       this.error = errorRes['error'];
       console.log(this.error);
     });

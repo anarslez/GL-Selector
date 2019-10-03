@@ -1,19 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {catchError} from 'rxjs/operators';
-import {throwError} from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
-export interface ServerValidationResponse {
-  email: string;
-  password: string;
-  first_name?: string;
-  last_name?: string;
-  confirm?: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class HttpService {
 
   constructor( private _http: HttpClient) {
