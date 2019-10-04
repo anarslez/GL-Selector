@@ -15,6 +15,7 @@ import { FooterComponent } from './footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GetstartedComponent } from './getstarted/getstarted.component';
 import { CameraComponent } from './camera/camera.component';
+import {AuthInterceptorService} from "./auth/auth-interceptor.service";
 
 
 
@@ -37,7 +38,13 @@ import { CameraComponent } from './camera/camera.component';
     HttpClientModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide : HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi   : true,
+    },
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -23,16 +23,28 @@ export class AuthService {
     ) { }
 
   user = new BehaviorSubject<User>(null);
+  tokenExpirationTimer: any;
 
   loginUser(userObj) {
     return this._http
       .post('http://localhost:8000/login/', userObj)
       .pipe(
         tap(resData => {
-          console.log(resData);
           this.handleAuthentication(resData['data']);
         })
       );
+  }
+
+  logout() {
+    this.user.next(null);
+    localStorage.removeItem('userData');
+    if (this._router.url === '/dashboard') {
+      this._router.navigate(['/login']);
+    }
+    // if (this.tokenExpirationTimer) {
+    //   clearTimeout(this.tokenExpirationTimer);
+    // }
+    // this.tokenExpirationTimer = null;
   }
 
   handleAuthentication (data: object) {
@@ -43,8 +55,9 @@ export class AuthService {
       data['email'],
       data['joined_date'],
       data['access'],
-      data['exp'],
+      +data['exp'],
     );
     this.user.next(user);
+    localStorage.setItem('userData', JSON.stringify(user));
   }
 }

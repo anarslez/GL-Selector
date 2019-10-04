@@ -6,11 +6,11 @@ export class User {
     public email: string,
     public joinedDate: string,
     private _token: string,
-    private _exp: any,
+    private _exp: number,
   ) {}
 
   get token () {
-    if (!this._exp || new Date() > this._exp) {
+    if (!this._exp || new Date().getTime() > (this._exp * 1000)) {
       return null;
     }
     return this._token;

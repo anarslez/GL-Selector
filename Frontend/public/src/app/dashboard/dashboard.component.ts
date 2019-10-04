@@ -59,15 +59,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     $('#back').on('click', function(ev) {
       ev.preventDefault();
       $('.camera').fadeOut(400, function() {
-        $('#main').fadeIn(400, function() {
-          console.log('Strahan');
-        });
+        $('#main').fadeIn(400, function() {});
       });
     });
     $('.container').on('click', function() {
       // self.activity++;
       // const check = self.activity;
-      console.log('Strahan');
       // setTimeout(function () {
       //   console.log('Giraffe');
       //   if (check === self.activity) {

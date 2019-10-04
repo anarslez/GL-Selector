@@ -4,11 +4,16 @@
     <i class="bars icon"></i>
     Menu
     <div class="menu">
-      <div class="item" [routerLink] ="['getstarted']">Getting Started</div>
-      <div class="item" [routerLink] = "['login']">Login</div>
-      <div class="item" [routerLink] ="['register']" >Register</div>
+      <div class="item" [routerLink] ="['getstarted']" *ngIf="!isAuthenticated">Getting Started</div>
+      <div class="item" [routerLink] = "['login']" *ngIf="!isAuthenticated">Login</div>
+      <div class="item" [routerLink] ="['register']" *ngIf="!isAuthenticated">Register</div>
+      <div class="item" [routerLink] ="['dashboard']" *ngIf="isAuthenticated">Dashboard</div>
+<!--      <div class="item" *ngIf="isAuthenticated" (click)="onLogout()">Logout</div>-->
     </div>
   </button>
+  <div *ngIf="isAuthenticated" (click)="onLogout()" class="ui right labeled icon button clear logout" tabindex="0">
+    Logout <i class="sign out alternate icon"></i>
+  </div>
 
   <div class='fill'></div>
 
