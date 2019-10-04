@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './auth/auth.guard';
+import { PreventLoggedInAccess } from './auth/logged-in.guard';
 
 import { LoginComponent } from './login/login.component';
 import { HeadComponent } from './head/head.component';
@@ -16,16 +17,18 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [PreventLoggedInAccess]
   },
   {
     path: 'register',
-    component: RegistrationComponent
+    component: RegistrationComponent,
+    // canActivate: [PreventLoggedInAccess]
   },
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard]
+    // canActivate: [AuthGuard],
   },
   {
     path: 'getstarted',

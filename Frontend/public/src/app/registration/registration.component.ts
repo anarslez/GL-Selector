@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { HttpResponse } from '@angular/common/http';
 
-import { ServerValidationResponse } from '../auth/auth.service';
+import { AuthService, ServerValidationResponse} from '../auth/auth.service';
 
 declare var $: any;
 
@@ -24,7 +24,11 @@ export class RegistrationComponent implements OnInit {
   inputs = { send: true, component: 'register', User: null };
   error = {};
 
-  constructor (private _httpService: HttpService, private _redirect: Router) { }
+  constructor (
+    private _httpService: HttpService,
+    private _redirect: Router,
+    private _authService: AuthService
+  ) { }
 
   ngOnInit() {
     // const observable = this._httpService.check();
@@ -95,8 +99,8 @@ export class RegistrationComponent implements OnInit {
     // });
   }
 
-  createUser() {
-    const register = this._httpService.createUser(this.User);
+  onSubmit() {
+    const register = this._authService.registerUser(this.User);
     register.subscribe((dataRes: any) => {
       let response: any;
       response = dataRes;

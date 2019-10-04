@@ -15,4 +15,11 @@ export class User {
     }
     return this._token;
   }
+
+  get tokenExp () {
+    if (!this._exp || new Date().getTime() > (this._exp * 1000)) {
+      return null;
+    }
+    return this._exp * 1000;
+  }
 }

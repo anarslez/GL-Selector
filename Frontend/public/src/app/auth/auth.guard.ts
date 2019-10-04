@@ -13,12 +13,18 @@ import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
+
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): any {
+    // if (!this.authService.isLoggedIn) {
+    //   return this.router.navigateByUrl('/login');
+    // } else {
+    //   return true;
+    // }
     return this.authService.user.pipe(
       take(1),
       map(user => {
@@ -28,12 +34,12 @@ export class AuthGuard implements CanActivate {
         }
         return this.router.createUrlTree(['login']);
       })
+    );
+  }
       // tap(isAuth => {
       //   console.log(isAuth);
       //   if (!isAuth) {
       //     this.router.navigate(['/login']);
       //   }
       // })
-    );
-  }
 }
