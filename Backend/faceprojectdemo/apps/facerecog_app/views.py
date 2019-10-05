@@ -29,11 +29,14 @@ from faceprojectdb.settings import SIMPLE_JWT as jwt_settings
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def test(request):
+@permission_classes([AllowAny])
+def test(request, id=None):
     # current date and time
+    if not id:
+        return JsonResponse({'message': 'no id!!!!!!'}, status=status.HTTP_400_BAD_REQUEST)
     test_context = {
-        'message': 'test worked, token auth',
+        'message': 'test worked, passed optional id',
+        'id': id
     }
     return JsonResponse(test_context, status=status.HTTP_200_OK)
 

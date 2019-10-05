@@ -28,6 +28,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this._authService.user.subscribe();
+    if (!this._authService.isLoggedIn) {
+      this._redirect.navigate(['/login']);
+    }
     // const observable = this._httpService.check();
     // observable.subscribe(data => {
     //   if (data['token'] < 1) {
