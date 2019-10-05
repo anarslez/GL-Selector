@@ -24,7 +24,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import *
-from .permissions import *
 from .models import *
 
 def test(request):
