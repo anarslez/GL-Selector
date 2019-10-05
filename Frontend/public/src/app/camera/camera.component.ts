@@ -1,5 +1,11 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import {Observable, Subscription} from 'rxjs';
+import { map, take } from 'rxjs/operators';
+
 import { HttpService } from '../http.service';
+import { AuthService } from '../auth/auth.service';
+import { User } from '../auth/user.model';
+
 declare var $: any;
 declare var AOS: any;
 
@@ -22,17 +28,26 @@ export class CameraComponent implements OnInit, OnDestroy {
   Object = Object;
   res_img: string;
   progress: boolean;
+  user: any;
+  userId: number;
 
-  constructor(private _httpService: HttpService) { }
+  constructor(
+    private _httpService: HttpService,
+    private _authService: AuthService,
+  ) { }
 
   ngOnInit() {
-    console.log(this.inputs);
+    if (this._authService.isLoggedIn) {
+      this.user = this._authService.user.getValue();
+      this.userId = this.user['id'];
+    }
+    // +++++++++++++++++++++++++++++++++++++++
     this.progress = false;
     AOS.init();
     // console.log('Naked ice cream');
-    console.log(this.inputs);
+    // console.log(this.inputs);
     if (this.inputs['send'] === true) {
-      console.log('Barbershop');
+      // console.log('Barbershop');
     }
     // console.log('Sicko Mode');
     const self = this;
@@ -102,46 +117,24 @@ export class CameraComponent implements OnInit, OnDestroy {
   }
 
   sendImageFromService() {
-    console.log(this.inputs);
     const newstr = this.src_img.substring(22);
     const info = {demo: true, img_data: newstr, component: this.inputs['component']};
-    // const info = {demo: true, img_data: newstr, component: this.inputs['component'], User: this.inputs['User'};
-    // console.log('hello:  ' + this.inputs);
-    if (this.inputs['component'] === 'register') {
-      console.log('Register is the value of demo');
-      console.log(this.inputs['User']);
-      info['User'] = this.inputs['User'];
-      console.log(info['User']);
-    } else if (this.inputs['component'] === 'dashboard') {
-      console.log('Dashboard is the value of demo');
-      console.log(this.inputs['id']);
-      info['id'] = this.inputs['id'];
-      console.log(info['id']);
+    let imgObservable: Observable<any>;
+    if (!this.userId) {
+      imgObservable = this._httpService.sendImage(info);
+    } else {
+      imgObservable = this._httpService.sendImage(info, this.userId);
     }
-    const tempObservable = this._httpService.sendImage(info);
-    tempObservable.subscribe((res: any) => {
-      // console.log('this is the error', res.error);
+    imgObservable.subscribe((res: any) => {
       this.res_img = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
       this.res_img = 'data:image/jpeg;base64,' + res.image;
-      // console.log(this.src_img);
       if (Object.keys(res.error).length !== 0) {
-        // console.log('response error', res.error);
         this.errors = res.error;
         this.face_shape = null;
-        // console.log('there are some errors');
       } else {
-
         this.progress = true;
         this.errors = null;
         this.face_shape = res.shape;
-        if (this.inputs['component'] === 'register') {
-            const observable = this._httpService.loginPost(res.id);
-            observable.subscribe((data: any) => {
-            console.log(data);
-          });
-        }
-        // console.log('in if', res.shape);
-        // console.log('no errors');
       }
     });
     $('.results').modal('show');

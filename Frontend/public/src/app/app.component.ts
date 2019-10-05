@@ -1,6 +1,7 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 
-import { AuthService } from "./auth/auth.service";
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +13,13 @@ export class AppComponent implements  OnInit {
 
   constructor(
     private _authService: AuthService,
+    private _router: Router,
   ) {}
 
   ngOnInit() {
     this._authService.autoLogin();
+    if (this._authService.isLoggedIn) {
+      this._router.navigate(['/dashboard']);
+    }
   }
 }

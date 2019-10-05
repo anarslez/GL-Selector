@@ -20,12 +20,5 @@ export class GetstartedComponent implements OnInit{
     AOS.init();
   }
 
-  onTest() {
-    this._httpService.test().subscribe(resData => {
-      console.log(resData);
-    }, error => {
-      console.log(error);
-    });
-  }
 
 }

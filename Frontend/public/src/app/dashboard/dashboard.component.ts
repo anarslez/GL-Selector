@@ -5,7 +5,8 @@ import { e } from '@angular/core/src/render3';
 import { HttpService } from '../http.service';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../auth/user.model';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { take, map, tap } from 'rxjs/operators';
 
 declare var $: any;
 declare var AOS: any;
@@ -16,21 +17,39 @@ declare var AOS: any;
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  userSub: Subscription;
   inputs = { send: true, component: 'dashboard', id: null };
-  activity: number;
+
+  userSub: Subscription;
+  user: any;
+  userId: number;
+  images = [];
+  joinedDate: Date;
 
   constructor (
     private _httpService: HttpService,
     private _authService: AuthService,
-    private _redirect: Router,
+    private _router: Router,
   ) { }
 
   ngOnInit() {
-    this.userSub = this._authService.user.subscribe();
     if (!this._authService.isLoggedIn) {
-      this._redirect.navigate(['/login']);
+      this._router.navigate(['/login']);
     }
+    this.userSub = this._authService.user.subscribe(
+      userData => {
+        this.joinedDate = new Date(userData['joinedDate']);
+        this.user = userData;
+      }
+    );
+    this.userId = this.user.id;
+    const imgObservable = this._httpService.retrieveUserImages(this.userId);
+    imgObservable.subscribe(
+      imageData => {
+        for (const img of imageData['faces']) {
+          this.images.push('data:image/jpeg;base64,' + img['image']);
+        }
+      }
+    );
     // const observable = this._httpService.check();
     // observable.subscribe(data => {
     //   if (data['token'] < 1) {
@@ -93,19 +112,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     AOS.init();
   }
 
-  onTest() {
-    this._httpService.test().subscribe(resData => {
-      console.log(resData);
-    }, error => {
-      console.log(error);
-    });
-  }
-
   ngOnDestroy() {
     $('.gallery').remove();
     this.userSub.unsubscribe();
   }
 
-  logout() {
-  }
 }

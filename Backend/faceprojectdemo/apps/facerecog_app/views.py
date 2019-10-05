@@ -74,21 +74,18 @@ def logout(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def retrieve(request): # Retrieves user info after successful login
-    body = json.loads(request.body.decode('utf-8'))
-    user = User.objects.get(id=body)
+def retrieve(request, id): # Retrieves user info after successful login
+    print('request')
+#     body = json.loads(request.body.decode('utf-8'))
+    user = User.objects.get(id=id)
 #     creation = str(user.created_at.strftime("%B")) + ' ' + str(user.created_at.year)
     facebag = []
     for mug in Face.objects.filter(user=user):
         facebag.append(Face.objects.Jsonize(mug))
     context = {
-        'first_name': user.first_name,
-        'last_name':  user.last_name,
-        'email':  user.email,
-        'created': creation,
         'faces': facebag,
     }
-    return HttpResponse(json.dumps(context), content_type="application/json")
+    return JsonResponse(context, content_type="application/json")
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -255,7 +252,7 @@ def capture(request, id=None):
                 pass
             else:
                 print('woot')
-                Face.objects.create(chin_angle = chinangle, mofa_ratio = mofa, hlmo_ratio = hairangle, shape = shape, image = encoded_string, user = User.objects.get(id=id))
+                Face.objects.create(chin_angle = chinangle, mofa_ratio = mofa, hlmo_angle = hairangle, shape = shape, image = encoded_string, user = User.objects.get(id=id))
 
             context_before = {
                     "error": False,

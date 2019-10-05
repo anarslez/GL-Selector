@@ -18,10 +18,10 @@
     text-align:center;
 }
 
-.userinfo button{
-    display:block;
-    color:black;
-}
+/*.userinfo button{*/
+/*    display:block;*/
+/*    color:black;*/
+/*}*/
 .glass img{
     height:auto;
     width:100%;
@@ -127,4 +127,11 @@ i {
 
 .huge {
     margin-left: 35px;
+}
+.modal-image {
+  height: 200px;
+  width: 250px;
+  display: inline-block;
+  margin: 2px;
+  padding: 5px;
 }

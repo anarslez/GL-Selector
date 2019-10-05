@@ -1,10 +1,6 @@
 from django.urls import include, path
 from django.conf.urls import include, url
 from rest_framework import routers
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 from . import views
 
@@ -14,10 +10,8 @@ urlpatterns = [
     # path('capture/', views.capture, name='capture'), # Analyze pics sent to Python
     path('login/', views.login, name='login'), # Log our prospective user in
     path('logout/', views.logout, name='logout'), # Log our prospective user in
-    path('retrieve/', views.retrieve, name='retrieve'), #Retrieve user info before displaying in dashboard
 #     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    url(r'^retrieve/(?P<id>\d+)/$', views.retrieve, name='retrieve'), # Retrieve user images on dashboard when logged in
     url(r'^capture/$', views.capture),
     url(r'^capture/(?P<id>\d+)/$', views.capture),
 ]

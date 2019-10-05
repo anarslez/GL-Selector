@@ -1,29 +1,27 @@
 <div class="container" data-aos='fade' data-aos-duration="1400" data-aos-delay="200">
   <div id="main">
-<!--    <h1 class='ui huge header'>Welcome, {{ User.first_name }}</h1>-->
-    <button type="button"class="ui button" (click)="onTest()">TEST</button>
+    <h1 class='ui huge header'>Welcome, {{ user.firstName }}</h1>
     <div class="ui card left">
       <div class="image">
-        <img class="current" src="assets/img/zach.png">
+        <img class="current" src="{{ images[0] }}">
         <button class="ui button" id="toggle">
             <i class="image icon"></i>
             Gallery!
         </button>
       </div>
       <div class="content">
-<!--        <a class="header">{{ User.first_name }}</a>-->
+        <a class="header">{{ user.firstName }}</a>
         <div class="meta">
-<!--          <span class="date">Joined in {{ User.created }}</span>-->
+          <span class="date">Joined: {{ joinedDate | date:'shortDate'}}</span>
         </div>
         <div class="description">
-<!--          Name: {{ User.first_name }} {{ User.last_name }}-->
+          Name: {{ user.firstName }} {{ user.lastName }}
           <br>
-<!--          Email: {{ User.email }}-->
+          Email: {{ user.email }}
         </div>
       </div>
       <div class="extra content">
         <button class='ui button newpic'>Take New Picture</button>
-        <button (click)=logout() class='ui button'><i></i>Logout</button>
       </div>
     </div>
     <div class="right">
@@ -68,7 +66,12 @@
     <input id="back" type="submit" value="Return to Dashboard" class="ui inverted blue medium button next1 ">
   </div>
 </div>
-<div class="ui longer modal gallery">
+<div class="ui longer modal gallery four column grid">
+  <div class="row">
+    <div class="column" *ngFor="let img of images">
+      <img src="{{ img }}">
+    </div>
+  </div>
   <div class="actions">
     <div class="ui button close">Close</div>
   </div>
