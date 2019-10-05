@@ -28,17 +28,17 @@ from faceprojectdb.settings import SIMPLE_JWT as jwt_settings
 # from .permissions import *
 
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def test(request, id=None):
-    # current date and time
-    if not id:
-        return JsonResponse({'message': 'no id!!!!!!'}, status=status.HTTP_400_BAD_REQUEST)
-    test_context = {
-        'message': 'test worked, passed optional id',
-        'id': id
-    }
-    return JsonResponse(test_context, status=status.HTTP_200_OK)
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def test(request, id=None):
+#     # current date and time
+#     if not id:
+#         return JsonResponse({'message': 'no id!!!!!!'}, status=status.HTTP_400_BAD_REQUEST)
+#     test_context = {
+#         'message': 'test worked, passed optional id',
+#         'id': id
+#     }
+#     return JsonResponse(test_context, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -92,7 +92,7 @@ def retrieve(request): # Retrieves user info after successful login
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def capture(request):
+def capture(request, id=None):
      # Through line 168. Analyzes pics sent to '/capture'
     body = json.loads(request.body.decode('utf-8'))
     with open("face.jpeg", "wb") as fh:
@@ -250,15 +250,14 @@ def capture(request):
             with open('face.jpeg', "rb") as image_file:
                 encoded_string = str(base64.b64encode(image_file.read()))
                 encoded_string=encoded_string[2:-1]
-            if 'user_id' in request.session:
-                context_before = {
-                    "error": False,
-                    "shape": shape,
-                    "image": encoded_string,
-                    "id": request.session['user_id']
-                }
+            
+            if not id:
+                pass
             else:
-                context_before = {
+                print('woot')
+                Face.objects.create(chin_angle = chinangle, mofa_ratio = mofa, hlmo_ratio = hairangle, shape = shape, image = encoded_string, user = User.objects.get(id=id))
+
+            context_before = {
                     "error": False,
                     "shape": shape,
                     "image": encoded_string,
