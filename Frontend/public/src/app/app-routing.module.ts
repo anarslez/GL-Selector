@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [PreventLoggedInAccess]
+    // canActivate: [PreventLoggedInAccess]
   },
   {
     path: 'register',

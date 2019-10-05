@@ -35,24 +35,6 @@ export class AuthService {
       );
   }
 
-  psuedoCamFunc (image: string, userId?: string) {
-    // one required argument (img object), one notRequired argument (user.id if logged in)
-    // if a user is logged in, send image AND user.id
-      // in python views, check if the request has an id parameter
-      // if it does, process image and create face object for the user
-    // if user is NOT logged in, just send image object
-      // process image and return response
-  }
-
-  retrieveUserImages () {
-    // queries database for images based on the user that is logged in
-    // subscribe to this.user (w/i dashboard.component.ts)
-      // run .pipe(take(1), exhaustMap(...)...) and convert to subscription to this method
-      // data returned from this method should be in the form of image objects
-    // only used when the 'gallery modal' is opened
-    // will likely use the 'retrieve' method within views.py
-  }
-
   loginUser(userObj) {
     return this._http
       .post('http://localhost:8000/login/', userObj)
