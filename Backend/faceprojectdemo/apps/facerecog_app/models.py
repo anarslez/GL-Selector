@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 import re
-
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
