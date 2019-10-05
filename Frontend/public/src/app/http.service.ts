@@ -1,19 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {catchError} from 'rxjs/operators';
-import {throwError} from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
-export interface ServerValidationResponse {
-  email: string;
-  password: string;
-  first_name?: string;
-  last_name?: string;
-  confirm?: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class HttpService {
 
   constructor( private _http: HttpClient) {
@@ -21,16 +11,7 @@ export class HttpService {
   }
 
   retrieve(token) {
-    return this._http.post('http://localhost:8000/retrieve', token);
-  }
-
-  logout() {
-    console.log('Baby boy');
-    return this._http.delete('/session');
-  }
-
-  check() {
-    return this._http.get('/session');
+    return this._http.post('http://localhost:8000/retrieve/', token);
   }
 
   // createUser(userObj) {
@@ -39,12 +20,7 @@ export class HttpService {
   // }
 
   createUser (userObj) {
-    return this._http.post('http://localhost:8000/preregister', userObj);
-  }
-    
-  loginUser(userObj) {
-    console.log('in server loginUser', userObj);
-    return this._http.post('http://localhost:8000/login', userObj);
+    return this._http.post('http://localhost:8000/register/', userObj);
   }
 
   loginPost(token) {
@@ -52,7 +28,11 @@ export class HttpService {
   }
 
   sendImage(imgObject) {
-    return this._http.post('http://localhost:8000/capture', imgObject);
+    return this._http.post('http://localhost:8000/capture/', imgObject);
+  }
+
+  test() {
+    return this._http.get('http://localhost:8000/test/');
   }
 
   // @ts-ignore

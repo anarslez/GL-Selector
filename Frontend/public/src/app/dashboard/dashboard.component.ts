@@ -1,7 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
 import { e } from '@angular/core/src/render3';
+
+import { HttpService } from '../http.service';
+import { AuthService } from '../auth/auth.service';
+import { User } from '../auth/user.model';
+import { Subscription } from 'rxjs';
+
 declare var $: any;
 declare var AOS: any;
 
@@ -11,12 +16,18 @@ declare var AOS: any;
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  User: object = { first_name: '', last_name: '', email: '', created: '' };
+  userSub: Subscription;
   inputs = { send: true, component: 'dashboard', id: null };
   activity: number;
-  constructor( private _httpService: HttpService , private _redirect: Router ) { }
+
+  constructor (
+    private _httpService: HttpService,
+    private _authService: AuthService,
+    private _redirect: Router,
+  ) { }
 
   ngOnInit() {
+    this.userSub = this._authService.user.subscribe();
     // const observable = this._httpService.check();
     // observable.subscribe(data => {
     //   if (data['token'] < 1) {
@@ -30,21 +41,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //     });
     //   }
     // });
-    console.log(this.inputs);
-    this.activity = 0;
-    const self = this;
-    const timing = 1800000;
-    setTimeout(function () {
-      console.log('Giraffe');
-      if ( self.activity === 0) {
-        const morty = self._httpService.loginPost(-1);
-        morty.subscribe(() => {
-          self._redirect.navigate(['/login']);
-        });
-      } else {
-        console.log('Addison');
-      }
-    }, timing);
+    // console.log(this.inputs);
+    // this.activity = 0;
+    // const self = this;
+    // const timing = 1800000;
+    // setTimeout(function () {
+    //   console.log('Giraffe');
+    //   if ( self.activity === 0) {
+    //     const morty = self._httpService.loginPost(-1);
+    //     morty.subscribe(() => {
+    //       self._redirect.navigate(['/login']);
+    //     });
+    //   } else {
+    //     console.log('Addison');
+    //   }
+    // }, timing);
     $('.camera').css('display', 'none');
     $('.newpic').on('click', function(ev) {
       ev.preventDefault();
@@ -56,42 +67,42 @@ export class DashboardComponent implements OnInit, OnDestroy {
     $('#back').on('click', function(ev) {
       ev.preventDefault();
       $('.camera').fadeOut(400, function() {
-        $('#main').fadeIn(400, function() {
-          console.log('Strahan');
-        });
+        $('#main').fadeIn(400, function() {});
       });
     });
     $('.container').on('click', function() {
-      self.activity++;
-      const check = self.activity;
-      console.log('Strahan');
-      setTimeout(function () {
-        console.log('Giraffe');
-        if (check === self.activity) {
-          const morty = self._httpService.loginPost(-1);
-          morty.subscribe(() => {
-            self._redirect.navigate(['/login']);
-          });
-        } else {
-          console.log('Addison');
-        }
-      }, timing);
+      // self.activity++;
+      // const check = self.activity;
+      // setTimeout(function () {
+      //   console.log('Giraffe');
+      //   if (check === self.activity) {
+      //     const morty = self._httpService.loginPost(-1);
+      //     morty.subscribe(() => {
+      //       self._redirect.navigate(['/login']);
+      //     });
+      //   } else {
+      //     console.log('Addison');
+      //   }
+      // }, timing);
     });
     $('.gallery').modal('attach events', '.close', 'hide');
     $('.gallery').modal('attach events', '#toggle', 'show');
     AOS.init();
   }
 
-  Logout() {
-    const observable = this._httpService.logout();
-    observable.subscribe((data) => {
-      console.log(data);
-      this._redirect.navigate(['/login']);
+  onTest() {
+    this._httpService.test().subscribe(resData => {
+      console.log(resData);
+    }, error => {
+      console.log(error);
     });
   }
 
   ngOnDestroy() {
     $('.gallery').remove();
+    this.userSub.unsubscribe();
   }
 
+  logout() {
+  }
 }

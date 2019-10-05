@@ -2,13 +2,13 @@ iframe {
     margin-left: 10px;
 }
 
-#settings {
+#settings, .logout {
     background-color: transparent;
     color: #e0e0e0;
     margin-left: -5px;
 }
 
-#settings:hover {
+#settings:hover, .logout:hover {
     background-color: rgba(224,225,226,0.3);
     color: white;
 }
@@ -30,4 +30,8 @@ iframe {
 img{
     outline:none;
     cursor:pointer;
+}
+
+.logout {
+  background-color: rgba(0,0,0,0);
 }

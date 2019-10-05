@@ -36,6 +36,7 @@ class User(AbstractUser):
     date_joined = None
     USERNAME_FIELD = 'email'
     objects = UserManager()
+    REQUIRED_FIELDS = []
 
 
 class FaceManager(models.Manager):

@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../http.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { ServerValidationResponse } from '../http.service';
-import {HttpResponse} from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
+
+import { AuthService, ServerValidationResponse} from '../auth/auth.service';
 
 declare var $: any;
-
 
 @Component({
   selector: 'app-registration',
@@ -24,12 +24,13 @@ export class RegistrationComponent implements OnInit {
   inputs = { send: true, component: 'register', User: null };
   error = {};
 
-  constructor( private _httpService: HttpService , private _redirect: Router ) { }
+  constructor (
+    private _httpService: HttpService,
+    private _redirect: Router,
+    private _authService: AuthService
+  ) { }
 
   ngOnInit() {
-    console.log('////////////////');
-    console.log(this.error);
-    console.log('////////////////');
     // const observable = this._httpService.check();
     // observable.subscribe(data => {
     //   if (data['token'] > 0) {
@@ -82,31 +83,32 @@ export class RegistrationComponent implements OnInit {
       });
     }
     // all this commented out stuff makes it so that client hits the server twice
-    $('#signup-form').on('submit', function(ev) {
-      $('.next1').attr('disabled', true);
-      ev.preventDefault();
-      action();
-    });
-    $('.prev1').on('click', function(ev) {
-      $('.next1').attr('disabled', false);
-      self.User['precheck'] = true;
-      ev.preventDefault();
-      $('#accountS').removeClass('disabled');
-      $('#socialP').addClass('disabled');
-      $('#social').transition('hide');
-      $('#account').transition('fly right');
-    });
+    // $('#signup-form').on('submit', function(ev) {
+    //   $('.next1').attr('disabled', true);
+    //   ev.preventDefault();
+    //   action();
+    // });
+    // $('.prev1').on('click', function(ev) {
+    //   $('.next1').attr('disabled', false);
+    //   self.User['precheck'] = true;
+    //   ev.preventDefault();
+    //   $('#accountS').removeClass('disabled');
+    //   $('#socialP').addClass('disabled');
+    //   $('#social').transition('hide');
+    //   $('#account').transition('fly right');
+    // });
   }
 
-  createUser() {
-    const preregister = this._httpService.createUser(this.User);
-    preregister.subscribe((dataRes: any) => {
+  onSubmit() {
+    const register = this._authService.registerUser(this.User);
+    register.subscribe((dataRes: any) => {
       let response: any;
       response = dataRes;
       console.log(response);
-      // this._redirect.navigate(['/dashboard']);
-    }, (errorRes: HttpResponse<ServerValidationResponse>) => {
+      this._redirect.navigate(['/dashboard']);
+    }, (errorRes: HttpResponse <ServerValidationResponse>) => {
       this.error = errorRes['error'];
+      console.log(this.error);
     });
   }
 }

@@ -29,12 +29,12 @@ export class CameraComponent implements OnInit, OnDestroy {
     console.log(this.inputs);
     this.progress = false;
     AOS.init();
-    console.log('Naked ice cream');
+    // console.log('Naked ice cream');
     console.log(this.inputs);
     if (this.inputs['send'] === true) {
       console.log('Barbershop');
     }
-    console.log('Sicko Mode');
+    // console.log('Sicko Mode');
     const self = this;
     $('#take-picture').hide();
     // $('#send').hide();
@@ -102,7 +102,7 @@ export class CameraComponent implements OnInit, OnDestroy {
   }
 
   sendImageFromService() {
-    console.log(this.inputs['User']);
+    console.log(this.inputs);
     const newstr = this.src_img.substring(22);
     const info = {demo: true, img_data: newstr, component: this.inputs['component']};
     // const info = {demo: true, img_data: newstr, component: this.inputs['component'], User: this.inputs['User'};
