@@ -16,7 +16,7 @@ declare var AOS: any;
 
 export class LoginComponent implements OnInit {
   send: boolean;
-  User: object = { email: '', password: '' };
+  User: any;
   error = {};
   message: string;
 
@@ -28,6 +28,10 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.message = '';
     this.send = true;
+    this.User = {
+      email: '',
+      password: ''
+    };
     // const observable = this._httpService.check();
     // observable.subscribe(data => {
     //   if (data['token'] > 0) {

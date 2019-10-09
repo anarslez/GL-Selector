@@ -63,7 +63,7 @@
   <h1 class="font" style="color:white;">Smile!</h1>
   <app-camera [inputs]="inputs"></app-camera>
   <div class='btns'>
-    <input id="back" type="submit" value="Return to Dashboard" class="ui inverted blue medium button next1 ">
+    <input id="back" type="submit" (click)="reloadImages()" value="Return to Dashboard" class="ui inverted blue medium button next1 ">
   </div>
 </div>
 <div class="ui longer modal gallery four column grid">

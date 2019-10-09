@@ -23,7 +23,7 @@ export class AuthService {
 
   user = new BehaviorSubject<User>(null);
   tokenExpirationTimer: any;
-  isLoggedIn: boolean = false;
+  isLoggedIn = false;
 
   registerUser(userObj) {
     return this._http
