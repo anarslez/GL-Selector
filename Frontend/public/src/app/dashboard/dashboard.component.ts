@@ -22,8 +22,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   userSub: Subscription;
   user: any;
   userId: number;
-  images = [];
+  images: any[] = [];
+  profilePicture: string;
   joinedDate: Date;
+
+  isHovered = false;
 
   constructor (
     private _httpService: HttpService,
@@ -45,8 +48,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const imgObservable = this._httpService.retrieveUserImages(this.userId);
     imgObservable.subscribe(
       imageData => {
+        this.profilePicture = 'data:image/jpeg;base64,' + imageData['faces'][0]['image'];
         for (const img of imageData['faces']) {
-          this.images.push('data:image/jpeg;base64,' + img['image']);
+          this.images.push({img: 'data:image/jpeg;base64,' + img['image'], shape: img['shape']});
         }
       }
     );
@@ -81,6 +85,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  onImageMouseEnter () {
+    this.isHovered = true;
+  }
+
+  onImageMouseLeave () {
+    this.isHovered = false;
   }
 
   ngOnDestroy() {

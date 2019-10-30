@@ -3,7 +3,7 @@
     <h1 class='ui huge header'>Welcome, {{ user.firstName }}</h1>
     <div class="ui card left">
       <div class="image">
-        <img class="current" src="{{ images[0] }}">
+        <img class="current" src="{{ profilePicture }}">
         <button class="ui button" id="toggle">
             <i class="image icon"></i>
             Gallery!
@@ -68,8 +68,13 @@
 </div>
 <div class="ui longer modal gallery four column grid">
   <div class="row">
-    <div class="column" *ngFor="let img of images">
-      <img src="{{ img }}">
+    <div class="column user-image" *ngFor="let img of images" (mouseenter)="onImageMouseEnter()" (mouseleave)="onImageMouseLeave()">
+      <img src="{{ img.img }}" class="image" alt="face image">
+      <div class="image-shape" *ngIf="isHovered" >
+        <a class="shape-text" target="_blank" href="https://www.coastal.com/glasses/{{img.shape}}-face">{{ img.shape | uppercase }}</a>
+      </div>
+    </div>
+    <div>
     </div>
   </div>
   <div class="actions">

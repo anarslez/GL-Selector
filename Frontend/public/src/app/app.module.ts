@@ -15,8 +15,8 @@ import { FooterComponent } from './footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GetstartedComponent } from './getstarted/getstarted.component';
 import { CameraComponent } from './camera/camera.component';
-import {AuthInterceptorService} from "./auth/auth-interceptor.service";
-import {AuthGuard} from "./auth/auth.guard";
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { AuthGuard } from './auth/auth.guard';
 
 
 

@@ -8,7 +8,7 @@ import {
 import { take, exhaustMap } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
-import {Observable} from "rxjs";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
