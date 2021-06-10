@@ -1,4 +1,4 @@
-Django==2.1.5
+Django==2.2.24
 django-cors-headers==2.4.0
 bcrypt==3.1.6
 opencv-python==4.0.0.21
